@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { PhoneInfoHelper } from './helpers/PhoneInfoHelper';
-import {  ACCESS_FONOAPI_TOKEN } from './config/access-configs';
+import { PhoneInfoHelper } from '../helpers/PhoneInfoHelper';
+import {  ACCESS_FONOAPI_TOKEN } from '../config/access-configs';
 import styled from 'styled-components';
-import { RDatabaseService } from './services/RDatabaseService';
-import { PhoneListComponent } from './components/PhonesListComponent';
-import { PhoneInfoComponent } from './components/PhoneInfoComponent';
+import { PhoneListComponent } from '../components/PhonesListComponent';
+import { PhoneInfoComponent } from '../components/PhoneInfoComponent';
+import { ServerApiHelper } from '../helpers/ServerApiHelper';
 
-class App extends Component {
+class ServerAppContainer extends Component {
     state = {
         phoneInfo: {
             technology: null,
@@ -20,19 +20,11 @@ class App extends Component {
     }
 
     componentWillMount() {
-        this.phoneStore = new RDatabaseService();
-        this.phoneStore.getCollectionData('phones', (snapQuery) => {
-            const toolsList = snapQuery.docs.map(documentSnapshot => {
-                return {
-                    id: documentSnapshot.id,
-                    ...documentSnapshot.data()
-                }
-            });
-            this.setState({phones: toolsList, chousedPhone: null})
-        }, (error) => {
-            console.warn('Error', error);
-        });
+        ServerApiHelper.get('/phones').then(({data})=>{
+            this.setState({phones: data, chousedPhone: null})
+        }).catch(console.warn);
     }
+
 
     async getPhoneData(device) {
         let fData = new FormData();
@@ -64,8 +56,12 @@ class App extends Component {
             date: +new Date(),
             status: !chousedPhone.status
         };
-        this.setState({chousedPhone: data}, () => {
-            this.phoneStore.updateCollectionData('phones', chousedPhone.id, data);
+        this.setState({chousedPhone: data}, async () => {
+            ServerApiHelper.patch(`/phones/${chousedPhone.id}`, data).then(({data}) => {
+                const {phones} = this.state;
+                const updatedPhones = phones.map((phone) => phone.id === data.id ? data : phone);
+                this.setState({chousedPhone: null, phones: updatedPhones});
+            });
         });
     }
 
@@ -89,4 +85,4 @@ const Wrapper = styled.div`
   width: 100vw;
 `;
 
-export default App;
+export default ServerAppContainer;
