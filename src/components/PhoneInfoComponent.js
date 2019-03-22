@@ -39,8 +39,8 @@ export function PhoneInfoComponent(props) {
                     <UserInfoBlockTitle>Username</UserInfoBlockTitle>
                     <UserInfoBlockTitleValue>
                         {chousedPhone.hasOwnProperty('bookedBy') && chousedPhone.bookedBy != null && chousedPhone.status
-                        ? chousedPhone.bookedBy
-                        : <UserName {...name} />}
+                            ? chousedPhone.bookedBy
+                            : <UserName {...name} />}
                     </UserInfoBlockTitleValue>
                 </UserInfoBlock>
                 <UserInfoBlock>
@@ -49,7 +49,8 @@ export function PhoneInfoComponent(props) {
                 </UserInfoBlock>
             </UserInfo>
 
-            <BookButton status={chousedPhone.status} onClick={() => onBookPhone(name.value === '' ? null : name.value, )}>
+            <BookButton status={chousedPhone.status}
+                        onClick={() => onBookPhone(name.value === '' ? null : name.value,)}>
                 {!chousedPhone.status ? 'Book' : 'Return'}
             </BookButton>
         </InfoWrapper>

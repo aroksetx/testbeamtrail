@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { PhoneInfoHelper } from './helpers/PhoneInfoHelper';
-import { ACCESS_FIREBASE, ACCESS_FONOAPI_TOKEN } from './config/access-configs';
+import {  ACCESS_FONOAPI_TOKEN } from './config/access-configs';
 import styled from 'styled-components';
 import { RDatabaseService } from './services/RDatabaseService';
 import { PhoneListComponent } from './components/PhonesListComponent';
@@ -28,13 +28,13 @@ class App extends Component {
                     ...documentSnapshot.data()
                 }
             });
-            this.setState({phones: toolsList})
+            this.setState({phones: toolsList, chousedPhone: null})
         }, (error) => {
             console.warn('Error', error);
         });
     }
 
-    async getPhoneData(device, id) {
+    async getPhoneData(device) {
         let fData = new FormData();
         fData.set('token', ACCESS_FONOAPI_TOKEN);
         fData.set('device', device);
@@ -52,7 +52,7 @@ class App extends Component {
     }
 
     onPhoneClick = (ph) => {
-        this.setState({chousedPhone: ph})
+        this.setState({chousedPhone: ph});
         this.getPhoneData(ph.phone);
     }
 
@@ -66,7 +66,6 @@ class App extends Component {
         };
         this.setState({chousedPhone: data}, () => {
             this.phoneStore.updateCollectionData('phones', chousedPhone.id, data);
-            this.setState({chousedPhone: null});
         });
     }
 
