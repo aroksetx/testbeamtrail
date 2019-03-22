@@ -6,8 +6,6 @@ const uuid = require('uuid');
 
 const DataBase = module.exports = {
     init: () => {
-        console.log(db.has('phones')
-            .value())
         // Set some defaults (required if your JSON file is empty)
         db.defaults({ phones: [
                 {
