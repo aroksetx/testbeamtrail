@@ -1,0 +1,1 @@
+export const URL_FONOAPI = "https://fonoapi.freshpixl.com/v1";
